@@ -5,6 +5,7 @@ const pool = new Pool({
     user: "postgres",
     password: pass,
     database: "northwind",
+    //host: "172.30.96.1",
     host: "localhost",
     port: 5437
 });
@@ -25,7 +26,7 @@ function q(sql, parametros) {
     });
 }
 
-q("select * from customers", []).then(rows => {
+q("select * from customers limit 2", []).then(rows => {
     console.log(rows);
 }).catch(e => {
     console.log(e);
