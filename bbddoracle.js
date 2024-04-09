@@ -1,50 +1,56 @@
-const oracledb = require('oracledb')
+const oracledb = require('oracledb');
 
-var pool = null 
 try {
     oracledb.initOracleClient({
         libDir: "c:\\clienteOracle"
-    })
+    });
 } catch(error){
-    console.log(error)
+    console.log(error);
 }
 
-async function getPool(con){
-    return new Promise(async(resolve, reject) =>{
-        if (pool) resolve(pool)
-        try{
-            pool = await oracledb.createPool(con)
-            resolve(pool)
-        }catch(error){
-            reject(error)
+let pool = null;
+
+async function createPool() {
+    if (!pool) {
+        try {
+            pool = await oracledb.createPool({
+                user: "C##datos",
+                password: "datos",
+                connectString: "localhost:152/XE"
+            });
+        } catch(error) {
+            console.log(error);
+            throw error;
         }
-    })
+    }
 }
 
-async function q(sql, parametros){
-    let connection
-    try{
-        await getPool({
-            user:"C##datos",
-            password:"datos",
-            connectString:"localhost:152/XE",
-            poolAlias:"curso"
-        })
-        connection = await oracledb.getConnection("curso")
-        const resultados  =await connection.execute(sql, parametros,{
-            outFormat: oracledb.OBJECT
-        })
-        return resultados
-    } catch (error){
-        return error
-    } finally{
+async function q(sql, parametros) {
+    let connection;
+    try {
+        await createPool();
+        connection = await oracledb.getConnection();
+        const resultados = await connection.execute(sql, parametros, {
+            outFormat: oracledb.array
+        });
+        return resultados;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    } finally {
         if (connection) {
-            try{
-                //cierro la connexión
+            try {
                 await connection.close();
-            } catch(err){
-                return(err)
+            } catch(err) {
+                console.log(err);
+                throw err;
             }
         }
     }
 }
+
+q("select * from customers", []).then(r => {
+    console.log(r);
+}).catch(e => {
+    console.log(e);
+});
