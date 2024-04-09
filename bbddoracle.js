@@ -31,7 +31,7 @@ async function q(sql, parametros) {
         await createPool();
         connection = await oracledb.getConnection();
         const resultados = await connection.execute(sql, parametros, {
-            outFormat: oracledb.array
+            outFormat: oracledb.OUT_FORMAT_ARRAY
         });
         return resultados;
     } catch (error) {
