@@ -30,4 +30,7 @@ q("select * from customers limit 2", []).then(rows => {
     console.log(rows);
 }).catch(e => {
     console.log(e);
-});
+}).finally(()=>{
+    console.log("Esto saldrá siempre tanto si va bien como sino")
+})
+;
