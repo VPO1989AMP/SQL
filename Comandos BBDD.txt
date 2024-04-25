@@ -1,0 +1,5 @@
+MYSQL:
+docker run --name sql-bbdd -p 3306:3306 -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:8.0.28
+
+POSTGRES
+docker run --name sql-bbdd -e POSTGRES_PASSWORD=my-secret-pw -p 5432:5432 -d postgres:13
